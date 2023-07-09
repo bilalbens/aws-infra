@@ -1,0 +1,72 @@
+repositories:
+  - "pocket-properties-dev" 
+  - "pocket-properties-prod" 
+main_vpc:
+  dev_aws_eip : 
+    dev-server-01: "eipalloc-044f9e346343c4f23" # should be created in console, then add the id here 
+    openvpn-server: "eipalloc-0efbe6592e4413ef4" 
+  prod_aws_eips :
+      prod-server-01: "eipalloc-0f0cb38404248a9c7" 
+      prod-server-02: "eipalloc-01c787b7e5541a005" 
+      
+  cidr  : "10.0.0.0/16"
+  environment:
+    dev:
+      records: ["dev","devadmin", "devapi"]
+      ec2:
+        dev-server-01:
+          amount: 1
+          ami: "ami-007855ac798b5175e"
+          type: "t2.micro"
+          env: "dev"
+          key_name: "pocket-properties-dev-key"
+        openvpn-server:
+          amount: 1
+          ami: "ami-0f95ee6f985388d58"
+          type: "t2.micro"
+          env: "dev"
+          key_name: "openvpn-key"
+        userdata-server:
+          amount: 1
+          ami: "ami-007855ac798b5175e"
+          type: "t2.micro"
+          env: "dev"
+          key_name: "pocket-properties-dev-key"
+
+    prod:
+      records: ["admin", "api"]
+      elb:
+        name: "front-lb"
+        type: "application"
+        enable_deletion: false
+        env: "prod"
+        target_group:
+            name         : "application-front"
+            port         : 80
+            protocol     : "HTTP"
+        listeners:
+            type         : "forward"
+            port         : 80
+            protocol     : "HTTP"
+      ec2:
+        prod-server-01:
+          amount: 1
+          ami: "ami-007855ac798b5175e"
+          type: "t2.micro"
+          env: "prod"
+          key_name: "pocket-properties-prod-key"
+
+        prod-server-02:
+          amount: 1
+          ami: "ami-007855ac798b5175e"
+          type: "t2.micro"
+          env: "prod"
+          key_name: "pocket-properties-prod-key"
+      launch_configuration:
+          ami: "ami-007855ac798b5175e"
+          type: "t2.micro"
+          env: "prod"
+          key_name: "pocket-properties-prod-key"
+
+
+          
